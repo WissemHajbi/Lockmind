@@ -41,9 +41,26 @@ async def main_async():
 
         content = types.Content(role="user", parts=[types.Part(text=user_input)])
 
-        try:   
+        try:
             async for event in runner.run_async(user_id="ThisIsMyId", session_id=new_session.id, new_message=content):
                 if event.content and event.content.parts and event.content.parts[0].text:
+                    current_session = session_service.get_session(
+                        app_name="Lockmind",
+                        user_id="ThisIsMyId",
+                        session_id=new_session.id
+                    )
+                    is_validated = current_session.state.get("validated", False)
+
+                    # Get agent name from event.author (as seen in other examples)
+                    agent_name = getattr(event, 'author', '') or ""
+
+                    # Check if this response is from PasswordsManager
+                    is_passwords_manager = "Passwords_Manager" in str(agent_name)
+
+                    # Only print PasswordsManager responses if user is authenticated
+                    if is_passwords_manager and not is_validated:
+                        continue
+
                     print(f"AI: {event.content.parts[0].text}")
         except Exception as e:
             print(f"Error during agent run: {e}")

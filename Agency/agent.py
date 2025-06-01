@@ -3,6 +3,7 @@ from google.adk.agents import SequentialAgent
 from .workers.auth_manager import AuthManager
 from .workers.passwords_manager import PasswordsManager
 
+# Sequential Agent that enforces authentication flow
 LockmindAgent = SequentialAgent(
     name="Lockmind_Sequential_Agent",
     sub_agents=[AuthManager, PasswordsManager],
