@@ -1,1 +1,1 @@
-from .agent import ManagerAgent
+from .agent import LockmindAgent
